@@ -4,10 +4,6 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <dirent.h>
-#include <signal.h>
 
 #define MAX_INPUT_SIZE 1024
 
@@ -38,14 +34,16 @@ int main(void)
         input[strcspn(input, "\n")] = '\0';
 
         /* Fork a child process */
-        pid_t pid = fork();
+        pid_t pid;
+        pid = fork();
 
         if (pid == -1)
         {
             perror("fork");
             exit(EXIT_FAILURE);
         }
-        else if (pid == 0)
+
+        if (pid == 0)
         {
             /* Child process */
 
