@@ -1,24 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/wait.h>
-#include <sys/types.h>
+#include "shell.h"
 
-#define MAX_INPUT_SIZE 1024
-
-/**
- * display_prompt - Display a simple shell prompt.
- */
-void display_prompt(void);
-
-/**
- * main - Main function for the simple shell.
- * Return: Always 0.
- */
 int main(void)
 {
     char input[MAX_INPUT_SIZE];
+    pid_t pid;
 
     while (1)
     {
@@ -34,7 +19,6 @@ int main(void)
         input[strcspn(input, "\n")] = '\0';
 
         /* Fork a child process */
-        pid_t pid;
         pid = fork();
 
         if (pid == -1)
@@ -42,8 +26,7 @@ int main(void)
             perror("fork");
             exit(EXIT_FAILURE);
         }
-
-        if (pid == 0)
+        else if (pid == 0)
         {
             /* Child process */
 
@@ -74,9 +57,6 @@ int main(void)
     return (0);
 }
 
-/**
- * display_prompt - Display a simple shell prompt.
- */
 void display_prompt(void)
 {
     printf("#cisfun$ ");
