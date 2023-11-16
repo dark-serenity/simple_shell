@@ -11,69 +11,77 @@
 
 #define MAX_INPUT_SIZE 1024
 
+/**
+ * display_prompt - Display a simple shell prompt.
+ */
 void display_prompt(void);
 
-int main(void);
-
-void display_prompt(void)
-{
-	printf("#cisfun$ ");
-	fflush(stdout);
-}
-
+/**
+ * main - Main function for the simple shell.
+ * Return: Always 0.
+ */
 int main(void)
 {
-	char input[MAX_INPUT_SIZE];
+    char input[MAX_INPUT_SIZE];
 
-	while (1)
-	{
-		display_prompt();
+    while (1)
+    {
+        display_prompt();
 
-		if (fgets(input, sizeof(input), stdin) == NULL)
-		{
-			printf("\n");
-			break; /* End of file (Ctrl+D) is encountered */
-		}
+        if (fgets(input, sizeof(input), stdin) == NULL)
+        {
+            printf("\n");
+            break; /* End of file (Ctrl+D) is encountered */
+        }
 
-		/* Remove newline character from input */
-		input[strcspn(input, "\n")] = '\0';
+        /* Remove newline character from input */
+        input[strcspn(input, "\n")] = '\0';
 
-		/* Fork a child process */
-		pid_t pid = fork();
+        /* Fork a child process */
+        pid_t pid = fork();
 
-		if (pid == -1)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		else if (pid == 0)
-		{
-			/* Child process */
+        if (pid == -1)
+        {
+            perror("fork");
+            exit(EXIT_FAILURE);
+        }
+        else if (pid == 0)
+        {
+            /* Child process */
 
-			/* Execute the command using execve */
-			char *argv[] = {input, NULL};
-			char *envp[] = {NULL};
-			if (execve(input, argv, envp) == -1)
-			{
-				/* Executable not found */
-				perror("execve");
-				exit(EXIT_FAILURE);
-			}
-		}
-		else
-		{
-			/* Parent process */
-			int status;
-			waitpid(pid, &status, 0);
+            /* Execute the command using execve */
+            char *argv[] = {input, NULL};
+            char *envp[] = {NULL};
+            if (execve(input, argv, envp) == -1)
+            {
+                /* Executable not found */
+                perror("execve");
+                exit(EXIT_FAILURE);
+            }
+        }
+        else
+        {
+            /* Parent process */
+            int status;
+            waitpid(pid, &status, 0);
 
-			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-			{
-				/* Executable found, but an error occurred */
-				printf("./shell: %s: command not found\n", input);
-			}
-		}
-	}
+            if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+            {
+                /* Executable found, but an error occurred */
+                printf("./shell: %s: command not found\n", input);
+            }
+        }
+    }
 
-	return (0);
+    return (0);
+}
+
+/**
+ * display_prompt - Display a simple shell prompt.
+ */
+void display_prompt(void)
+{
+    printf("#cisfun$ ");
+    fflush(stdout);
 }
 
